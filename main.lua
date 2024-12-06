@@ -5,6 +5,8 @@ require("gameManager")
 
 io.stdout:setvbuf("no")
 
+
+
 function love.load()
     Player = Snake:new()
     Level = Map:new(20, 20, 20)
@@ -15,7 +17,7 @@ function love.update()
 
     if Player.segments[1].x == Food.position.x and Player.segments[1].y == Food.position.y and not Player.hasEaten then
         GameManager.score = GameManager.score + 1
-        Player.hasEaten = true
+        Food:respawn()
     end
 end
 

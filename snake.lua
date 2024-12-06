@@ -27,8 +27,9 @@ end
 
 function Snake:move()
     table.insert(self.segments, 1, {x = self.segments[1].x + self.direction.x, y = self.segments[1].y + self.direction.y})
-    table.remove(self.segments, 4)
-    
+    if not self.hasEaten then
+        table.remove(self.segments, self.length+1)
+    end
 end
 
 function Snake:update()
@@ -38,7 +39,6 @@ function Snake:update()
 
     if self.timeSinceLastMovement >= 0.2 then
         self.timeSinceLastMovement = 0
-        self.hasEaten = false
         self:move()
     end
 end
