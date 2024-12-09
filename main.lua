@@ -1,31 +1,31 @@
-require("snake")
-require("map")
-require("food")
-require("gameManager")
+local map = require "map"
+local snake = require "snake"
+local food = require  "food"
+local gamemanager = require "gameManager"
+local collisionManager = require "collisionManager"
 
 io.stdout:setvbuf("no")
 
-
-
 function love.load()
-    Player = Snake:new()
-    Level = Map:new(20, 20, 20)
+    Player = snake:new()
+    Level = map:new(20, 20, 20)
 end
 
 function love.update()
     Player:update()
 
-    if Player.segments[1].x == Food.position.x and Player.segments[1].y == Food.position.y and not Player.hasEaten then
-        GameManager.score = GameManager.score + 1
-        Food:respawn()
+    if(collisionManager:collisionBetweenSnakeAndFood(Player, food)) then
+        gamemanager.score = gamemanager.score + 1
+        food:respawn()
+        Player.hasEaten = true
     end
 end
 
 function love.draw()
     Level:draw()
     Player:draw()
-    Food:draw()
+    food:draw()
 
     love.graphics.setColor(1,1,1)
-    love.graphics.print("Score: " .. tostring(GameManager.score), 10, 450, 0, 2, 2, 0, 0, 0)
+    love.graphics.print("Score: " .. tostring(gamemanager.score), 10, 450, 0, 2, 2, 0, 0, 0)
 end

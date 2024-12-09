@@ -1,4 +1,6 @@
-GameManager = {
+---@class gameManager
+local  gameManager = {
     score = 0,
-    hasEaten = false
 }
+
+return gameManager

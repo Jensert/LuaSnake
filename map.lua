@@ -1,7 +1,8 @@
-Map = {
+---@class map
+local map = {
 }
 
-function Map:new(cellSize, cellsX, cellsY)
+function map:new(cellSize, cellsX, cellsY)
     local o = {}
     o.cellSize = cellSize or 20
     o.cellsX = cellsX or 20
@@ -14,3 +15,5 @@ function Map:new(cellSize, cellsX, cellsY)
     
     return o
 end
+
+return map
