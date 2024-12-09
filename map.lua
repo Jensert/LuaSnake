@@ -1,5 +1,8 @@
 ---@class map
 local map = {
+    cellSize = nil,
+    cellsX = nil,
+    cellsY = nil
 }
 
 function map:new(cellSize, cellsX, cellsY)

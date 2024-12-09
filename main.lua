@@ -6,26 +6,43 @@ local collisionManager = require "collisionManager"
 
 io.stdout:setvbuf("no")
 
-function love.load()
-    Player = snake:new()
-    Level = map:new(20, 20, 20)
+local Game = {
+    ---@type snake
+    player = nil,
+    ---@type map
+    map = nil,
+}
+
+function Game:load()
+    self.player = snake:new()
+    self.map = map:new(20, 20, 20)
 end
 
-function love.update()
-    Player:update()
-
-    if(collisionManager:collisionBetweenSnakeAndFood(Player, food)) then
+function Game:update()
+    self.player:update()
+    if(collisionManager:collisionBetweenSnakeAndFood(self.player, food)) then
         gamemanager.score = gamemanager.score + 1
-        food:respawn()
-        Player.hasEaten = true
+        food:respawn(self.map)
+        self.player.hasEaten = true
     end
 end
 
-function love.draw()
-    Level:draw()
-    Player:draw()
-    food:draw()
-
+function Game:draw()
+    self.map:draw()
+    self.player:draw(self.map)
+    food:draw(self.map)
     love.graphics.setColor(1,1,1)
     love.graphics.print("Score: " .. tostring(gamemanager.score), 10, 450, 0, 2, 2, 0, 0, 0)
+end
+
+function love.load()
+    Game:load()
+end
+
+function love.update()
+    Game:update()
+end
+
+function love.draw()
+    Game:draw()
 end

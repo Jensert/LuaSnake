@@ -47,10 +47,11 @@ function snake:update()
     end
 end
 
-function snake:draw()
+---@param map map
+function snake:draw(map)
     for _segmentBlock, segment in ipairs(self.segments) do
         love.graphics.setColor(.2, .8, .4)
-        love.graphics.rectangle("fill", segment.x * Level.cellSize, segment.y * Level.cellSize, Level.cellSize, Level.cellSize)
+        love.graphics.rectangle("fill", segment.x * map.cellSize, segment.y * map.cellSize, map.cellSize, map.cellSize)
     end
 end
 
