@@ -26,7 +26,9 @@ function snake:getDirection()
     end
 end
 
-function snake:move()
+---@param map map
+function snake:move(map)
+    snake:checkMapBoundaries(map)
     table.insert(self.segments, 1, {x = self.segments[1].x + self.direction.x, y = self.segments[1].y + self.direction.y})
     if not self.hasEaten then
         table.remove(self.segments, self.length+1)
@@ -36,15 +38,33 @@ function snake:move()
     end
 end
 
-function snake:update()
+---@param map map
+function snake:checkMapBoundaries(map)
+    if self.segments[1].x > (map.cellsX) then -- right bounds
+        self.segments[1].x = 0
+    end
+    if self.segments[1].x < (0) then -- right bounds
+        self.segments[1].x = map.cellsX
+    end
+    if self.segments[1].y > (map.cellsY) then -- right bounds
+        self.segments[1].y = 0
+    end
+    if self.segments[1].y < (0) then -- right bounds
+        self.segments[1].y = map.cellsY
+    end
+end
+
+function snake:update(map)
     self.timeSinceLastMovement = self.timeSinceLastMovement + love.timer.getDelta()
 
     self:getDirection()
 
     if self.timeSinceLastMovement >= 0.2 then
         self.timeSinceLastMovement = 0
-        self:move()
+        self:move(map)
     end
+
+    
 end
 
 ---@param map map

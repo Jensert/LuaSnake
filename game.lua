@@ -65,7 +65,7 @@ function game:load()
 end
 
 function game:update(dt)
-    self.player:update()
+    self.player:update(self.map)
     
     if(collisionManager:collisionBetweenSnakeAndFood(self.player, food)) then
         gamemanager.score = gamemanager.score + 1
