@@ -5,11 +5,11 @@ local map = {
     cellsY = nil
 }
 
-function map:new(cellSize, cellsX, cellsY)
+function map:new(cellsX, cellsY, cellSize)
     local o = {}
-    o.cellSize = cellSize or 20
     o.cellsX = cellsX or 20
     o.cellsY = cellsY or 20
+    o.cellSize = cellSize or 20
 
     function o:draw()
         love.graphics.setColor(.4, .5, 1)

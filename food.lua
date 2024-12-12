@@ -12,8 +12,8 @@ end
 ---@param map map
 function food:respawn(map)
     self.position = {
-        x = math.random(0, map.cellsX),
-        y = math.random(0, map.cellsY)
+        x = math.random(0, map.cellsX-1),
+        y = math.random(0, map.cellsY-1)
     }
 end
 
