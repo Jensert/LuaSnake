@@ -7,6 +7,7 @@ local snake = {
     },
     length = 3,
     direction = {x=1, y=0},
+    moveDelay = 0.2,
     timeSinceLastMovement = 0,
     hasEaten = false,
 }
@@ -28,29 +29,39 @@ end
 
 ---@param map map
 function snake:move(map)
-    snake:checkMapBoundaries(map)
     table.insert(self.segments, 1, {x = self.segments[1].x + self.direction.x, y = self.segments[1].y + self.direction.y})
     if not self.hasEaten then
         table.remove(self.segments, self.length+1)
     else
         self.length = self.length + 1
         self.hasEaten = false
+        print(self.length)
     end
+    snake:checkMapBoundaries(map)
 end
 
 ---@param map map
 function snake:checkMapBoundaries(map)
-    if self.segments[1].x > (map.cellsX) then -- right bounds
+    if self.segments[1].x > (map.cellsX-1) then -- right bounds
         self.segments[1].x = 0
     end
     if self.segments[1].x < (0) then -- right bounds
         self.segments[1].x = map.cellsX
     end
-    if self.segments[1].y > (map.cellsY) then -- right bounds
+    if self.segments[1].y > (map.cellsY-1) then -- right bounds
         self.segments[1].y = 0
     end
     if self.segments[1].y < (0) then -- right bounds
         self.segments[1].y = map.cellsY
+    end
+end
+
+function snake:snakeCollision()
+    for _segmentBlock, segment in ipairs(self.segments) do
+        if segment.x == self.segments[1].x and segment.y == self.segments[1].y and segment ~= self.segments[1] then
+                print("Snake collision detected")
+                return true
+        end
     end
 end
 
@@ -59,7 +70,7 @@ function snake:update(map)
 
     self:getDirection()
 
-    if self.timeSinceLastMovement >= 0.2 then
+    if self.timeSinceLastMovement >= self.moveDelay then
         self.timeSinceLastMovement = 0
         self:move(map)
     end

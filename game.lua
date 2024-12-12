@@ -11,7 +11,7 @@ local game = {
     player = nil,
     ---@type map
     map = nil,
-
+    
     window_width = nil,
     window_height = nil,
 
@@ -47,6 +47,13 @@ function game:getFontScale()
     return 12 / self.font_size
 end
 
+function game:getWindowCenter()
+    return {
+        x = (self.canvas_width/2)/self:getFontScale(),
+        y = (self.canvas_height/2)/self:getFontScale()
+    }
+end
+
 function game:load()
     love.window.setTitle("Snake")
     love.window.setMode(640, 360, {resizable=true})
@@ -65,19 +72,31 @@ function game:load()
 end
 
 function game:update(dt)
-    self.player:update(self.map)
-    
-    if(collisionManager:collisionBetweenSnakeAndFood(self.player, food)) then
-        gamemanager.score = gamemanager.score + 1
-        food:respawn(self.map)
-        self.player.hasEaten = true
+    if not gamemanager.game_over then
+            
+        if not gamemanager.game_paused then
+
+            self.player:update(self.map)
+            
+            if(collisionManager:collisionBetweenSnakeAndFood(self.player, food)) then
+                gamemanager.score = gamemanager.score + 1
+                food:respawn(self.map)
+                self.player.hasEaten = true
+            end
+
+            if self.player:snakeCollision() then
+                gamemanager.game_over = true
+            end
+        end
+
     end
+
 end
 
 function game:draw()
     -- Render everything to canvas
     love.graphics.setCanvas(game.canvas)
-
+        
         self.map:draw()
         self.player:draw(self.map)
         food:draw(self.map)
@@ -86,7 +105,6 @@ function game:draw()
         game:drawText()
 
     love.graphics.setCanvas()
-    
 
     -- Draw the canvas
     love.graphics.draw(game.canvas, 0, 0, 0, game.canvas_scale.x, game.canvas_scale.y)
@@ -97,8 +115,43 @@ end
 function game:drawText(sX, sY)
     love.graphics.push()
     love.graphics.scale(sX or self:getFontScale(), sY or self:getFontScale())
+
     love.graphics.print("Score: " .. tostring(gamemanager.score), 5/self:getFontScale(), 330/self:getFontScale(), 0, 2, 2)
+
+    -- Game paused text
+    if gamemanager.game_paused then
+        love.graphics.setColor(1,0,0,1)
+        love.graphics.print("Paused",
+        game:getWindowCenter().x - 45/self:getFontScale(),
+        game:getWindowCenter().y,
+        0, 2, 2)
+        love.graphics.setColor(1,1,1)
+    end
+
+    -- Game over text
+    if gamemanager.game_over then
+        love.graphics.setColor(1,0,0,1)
+        love.graphics.print("Game Over",
+        game:getWindowCenter().x - 67.5/self:getFontScale(),
+        game:getWindowCenter().y,
+        0, 2, 2)
+        love.graphics.setColor(1,1,1)
+    end
+
     love.graphics.pop()
+end
+
+---@param state? string Optional - key state. Either pressed or released.
+function game:processInput(key, state)
+    if key == "escape" and state == "released" then
+        gamemanager.game_paused = not gamemanager.game_paused
+    end
+
+    if key == "lshift" and state == "pressed" then
+        self.player.moveDelay = 0.05
+    elseif key == "lshift" and state == "released" then
+        self.player.moveDelay = 0.2
+    end
 end
 
 return game
